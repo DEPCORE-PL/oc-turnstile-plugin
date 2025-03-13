@@ -1,0 +1,13 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    site_key:
+        label: Site Key
+        comment: Key for turnstile widget
+        type: text
+    secret:
+        label: Secret
+        comment: Secret used to verify turnstile request on the backend
+        type: text
