@@ -23,7 +23,7 @@ class TurnstileCaptcha extends ComponentBase
         ]);
 
         // Decode the JSON response
-        $result = json_decode($response->body);
+        $result = json_decode($response->body());
 
         // Return true if the CAPTCHA is valid, false otherwise
         return $result->success ?? false;

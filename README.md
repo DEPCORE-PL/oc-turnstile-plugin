@@ -8,12 +8,14 @@ This plugin is designed for internal use within our organization. It integrates 
 - **Settings Page**: Manage your Turnstile site key and secret key directly from the OctoberCMS backend.
 - **Component-Based**: Use the provided `turnstileCaptcha` component to add CAPTCHA to forms with minimal effort.
 - **Validation**: Automatically validate CAPTCHA responses on form submission.
+- **Custom Validation Rule**: A built-in validation rule (`turnstile`) simplifies CAPTCHA validation in form requests.
+- **Manual Verification**: Use the `TurnstileCaptcha::checkLegit()` or `TurnstileCaptcha::isCaptchaLegit()` methods to manually verify CAPTCHA responses.
 
 ---
 
 ## How It Works
 
-The plugin consists of two main parts:
+The plugin consists of three main parts:
 
 1. **Settings Page**:
    A backend settings page where you can configure the Turnstile site key and secret key. These keys are stored using OctoberCMS's `SettingsModel`.
@@ -21,13 +23,21 @@ The plugin consists of two main parts:
 2. **Turnstile Component**:
    A reusable component (`turnstileCaptcha`) that can be added to any form. It handles the rendering of the CAPTCHA widget and validates the response on form submission.
 
+3. **Custom Validation Rule**:
+   A custom validation rule (`turnstile`) is registered to simplify CAPTCHA validation in form requests.
+
+4. **Manual Verification Methods**:
+   The plugin provides two methods for manually verifying CAPTCHA responses:
+    - `TurnstileCaptcha::checkLegit()`: Returns a boolean (`true` if the CAPTCHA is verified, otherwise `false`).
+    - `TurnstileCaptcha::isCaptchaLegit($response)`: Validates a specific CAPTCHA response and returns a boolean.
+
 ---
 
 ## Usage Example
 
-Below is an example of how to use the Turnstile CAPTCHA in a contact form:
-
 ### Page Code
+
+Below is an example of how to use the Turnstile CAPTCHA in a contact form:
 
 ```htm
 title = "Contact Us"
@@ -42,7 +52,22 @@ use Depcore\Turnstile\Components\TurnstileCaptcha;
 
 function onFormSubmit()
 {
-    // Validate the CAPTCHA response
+    // Option 1: Use the custom validation rule
+    $data = post();
+    $rules = [
+        'name' => 'required',
+        'email' => 'required|email',
+        'message' => 'required',
+        'cf-turnstile-response' => 'required|turnstile', // Use the custom validation rule
+    ];
+
+    $validator = Validator::make($data, $rules);
+
+    if ($validator->fails()) {
+        throw new ValidationException($validator);
+    }
+
+    // Option 2: Manually verify the CAPTCHA
     if (!TurnstileCaptcha::checkLegit()) {
         throw new ValidationException(['captcha' => 'CAPTCHA validation failed. Please try again.']);
     }
@@ -83,7 +108,10 @@ function onFormSubmit()
 ### Explanation
 
 - **`[turnstileCaptcha]`**: This line includes the Turnstile CAPTCHA component in your form.
+- **`cf-turnstile-response`**: This is the default field name for the CAPTCHA response. It is automatically added by the Turnstile widget.
+- **`turnstile` Validation Rule**: The custom validation rule checks if the CAPTCHA response is valid. If not, it throws a validation error.
 - **`TurnstileCaptcha::checkLegit()`**: This method checks if the CAPTCHA response is valid. It returns `true` if the CAPTCHA is verified, otherwise `false`.
+- **`TurnstileCaptcha::isCaptchaLegit($response)`**: This method validates a specific CAPTCHA response and returns a boolean.
 - **`data-request="onFormSubmit"`**: This attribute specifies the AJAX handler to be called when the form is submitted.
 - **`data-request-flash`**: This attribute enables flash messages to be displayed after form submission.
 
@@ -109,10 +137,37 @@ The `turnstileCaptcha` component is simple to use and does not require additiona
 
 ---
 
+## Manual CAPTCHA Verification
+
+The plugin provides two methods for manually verifying CAPTCHA responses:
+
+1. **`TurnstileCaptcha::checkLegit()`**:
+   This method checks the CAPTCHA response included in the form submission. It returns `true` if the CAPTCHA is verified, otherwise `false`.
+
+   Example:
+   ```php
+   if (!TurnstileCaptcha::checkLegit()) {
+       throw new ValidationException(['captcha' => 'CAPTCHA validation failed. Please try again.']);
+   }
+   ```
+
+2. **`TurnstileCaptcha::isCaptchaLegit($response)`**:
+   This method validates a specific CAPTCHA response. Pass the `cf-turnstile-response` value to this method, and it will return `true` if the CAPTCHA is verified, otherwise `false`.
+
+   Example:
+   ```php
+   $response = post('cf-turnstile-response');
+   if (!TurnstileCaptcha::isCaptchaLegit($response)) {
+       throw new ValidationException(['captcha' => 'CAPTCHA validation failed. Please try again.']);
+   }
+   ```
+
+---
+
 ## Troubleshooting
 
 - **CAPTCHA Not Displaying**: Ensure that the Site Key and Secret Key are correctly entered in the settings page.
-- **Validation Fails**: Verify that the `checkLegit()` method is called during form submission and that the CAPTCHA widget is correctly integrated into your form.
+- **Validation Fails**: Verify that the `cf-turnstile-response` field is included in your form and that the `turnstile` validation rule or manual verification method is applied.
 
 ---
 

@@ -1,6 +1,5 @@
 <?php namespace Depcore\Turnstile;
-
-use Backend;
+use Depcore\Turnstile\Classes\TurnstileRule;
 use System\Classes\PluginBase;
 
 /**
@@ -10,6 +9,11 @@ use System\Classes\PluginBase;
  */
 class Plugin extends PluginBase
 {
+    public function register()
+    {
+        $this->registerValidationRule('turnstile', TurnstileRule::class);
+    }
+
     /**
      * pluginDetails about this plugin.
      */
@@ -34,6 +38,11 @@ class Plugin extends PluginBase
                 'class' => \Depcore\Turnstile\Models\CaptchaSettings::class,
             ]
         ];
+    }
+
+    public function boot()
+    {
+        include __DIR__ . '/classes/TurnstileRule.php';
     }
 
     /**
