@@ -3,23 +3,16 @@
 use Model;
 
 /**
- * CaptchaSettings Model
+ * CaptchaSettings SettingModel
  *
- * @link https://docs.octobercms.com/3.x/extend/system/models.html
+ * @link https://docs.octobercms.com/3.x/extend/settings/model-settings.html
  */
 class CaptchaSettings extends \System\Models\SettingModel
 {
-    use \October\Rain\Database\Traits\Validation;
-
     /**
-     * @var string table name
+     * @var string settings code
      */
     public $settingsCode = 'depcore_turnstile_captcha_settings';
 
     public $settingsFields = 'fields.yaml';
-
-    /**
-     * @var array rules for validation
-     */
-    public $rules = [];
 }

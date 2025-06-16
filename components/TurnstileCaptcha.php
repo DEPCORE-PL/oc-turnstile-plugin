@@ -5,13 +5,27 @@ use Depcore\Turnstile\Models\CaptchaSettings;
 use Illuminate\Support\Facades\Http;
 
 /**
- * TurnstileCaptcha Component
+ * TurnstileCaptcha component class.
  *
+ * This component integrates the Cloudflare Turnstile CAPTCHA into your application,
+ * providing bot protection for forms and other user interactions.
+ *
+ * @package depcore.turnstile
  * @link https://docs.octobercms.com/3.x/extend/cms-components.html
  */
 class TurnstileCaptcha extends ComponentBase
 {
 
+    /**
+     * Validates the legitimacy of a Turnstile CAPTCHA response.
+     *
+     * This static method checks whether the provided Turnstile CAPTCHA response token
+     * is valid and has been successfully verified. It is typically used to prevent
+     * automated submissions and ensure that the request is made by a human user.
+     *
+     * @param string $turnstileResponse The response token received from the Turnstile CAPTCHA widget.
+     * @return bool Returns true if the CAPTCHA response is valid; otherwise, false.
+     */
     public static function isCaptchaLegit($turnstileResponse)
     {
         $secret = CaptchaSettings::get('secret');
@@ -29,6 +43,15 @@ class TurnstileCaptcha extends ComponentBase
         return $result->success ?? false;
     }
 
+    /**
+     * Checks if the current request is legitimate.
+     *
+     * This static method performs validation to determine whether the request
+     * passes the necessary legitimacy checks, such as verifying CAPTCHA responses
+     * or other anti-bot mechanisms.
+     *
+     * @return bool Returns true if the request is legitimate, false otherwise.
+     */
     public static function checkLegit()
     {
         // Retrieve the CAPTCHA response from the form submission
@@ -38,7 +61,15 @@ class TurnstileCaptcha extends ComponentBase
         return static::isCaptchaLegit($turnstileResponse);
     }
 
-    public function onRender()
+    /**
+     * Handles the rendering of the Turnstile CAPTCHA component.
+     *
+     * This method is typically called to generate and display the CAPTCHA widget
+     * on the frontend. It prepares any necessary data and returns the rendered output.
+     *
+     * @return void
+     */
+    public function onRender(): void
     {
         $this->page["site_key"] = CaptchaSettings::get('site_key');
     }

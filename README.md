@@ -1,6 +1,6 @@
-# OctoberCMS Turnstile Captcha Plugin (Internal Use)
+# OctoberCMS Turnstile Captcha Plugin
 
-This plugin is designed for internal use within our organization. It integrates Cloudflare's Turnstile CAPTCHA into OctoberCMS projects, providing a simple and effective way to add CAPTCHA validation to forms. This ensures that form submissions are made by humans and not bots.
+This plugin integrates Cloudflare's Turnstile CAPTCHA into OctoberCMS projects, providing a simple and effective way to add CAPTCHA validation to forms. This ensures that form submissions are made by humans and not bots.
 
 ## Key Features
 
@@ -171,9 +171,8 @@ The plugin provides two methods for manually verifying CAPTCHA responses:
 
 ---
 
-## Notes for Internal Use
+## Notes
 
-- This plugin is designed specifically for internal use and is not intended for public distribution.
 - The plugin is lightweight and integrates seamlessly with OctoberCMS's existing functionality.
 - If additional features or customizations are needed, they can be implemented as required.
 
@@ -181,7 +180,27 @@ The plugin provides two methods for manually verifying CAPTCHA responses:
 
 ## License
 
-This plugin is proprietary and is intended for internal use only. Unauthorized distribution or use is prohibited.
+MIT License
+
+Copyright (c) 2025 Depcore
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ---
 
