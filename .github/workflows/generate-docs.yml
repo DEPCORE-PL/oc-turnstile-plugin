@@ -26,6 +26,11 @@ jobs:
         with:
           php-version: "8.2"
 
+      - name: Clean old docs
+        run: |
+          rm -rf docs/api
+          mkdir -p docs/api
+
       - name: Generate PHPDoc
         run: make phpdoc_make
 
