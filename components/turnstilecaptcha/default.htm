@@ -1,1 +1,4 @@
+{% if site_key == '' %}
+    <div class="warning">{{"Site key is missing go to settings/turnstile and add your key."|_}}</div>
+{% endif %}
 <div class="cf-turnstile" data-sitekey="{{site_key|raw}}"></div>
