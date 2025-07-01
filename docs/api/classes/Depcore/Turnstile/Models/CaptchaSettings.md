@@ -51,4 +51,4 @@ public $settingsFields
 
 
 ***
-> Automatically generated on 2025-06-20
+> Automatically generated on 2025-07-01

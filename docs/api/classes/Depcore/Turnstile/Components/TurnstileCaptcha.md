@@ -125,13 +125,13 @@ public componentDetails(): mixed
 
 ### onRun
 
-
+Applies the necessary scripts to make turnstile work
 
 ```php
-public onRun(): mixed
+public onRun(): void
 ```
 
-
+This method loads the turnstile script with an additional fix for reloading after failed validation
 
 
 
@@ -146,4 +146,4 @@ public onRun(): mixed
 
 
 ***
-> Automatically generated on 2025-06-20
+> Automatically generated on 2025-07-01
