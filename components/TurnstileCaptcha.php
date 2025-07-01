@@ -82,8 +82,17 @@ class TurnstileCaptcha extends ComponentBase
         ];
     }
 
+
+    /**
+     * Applies the necessary scripts to make turnstile work
+     *
+     * This method loads the turnstile script with an additional fix for reloading after failed validation
+     *
+     * @return void
+     */
     public function onRun()
     {
         $this->addJs("https://challenges.cloudflare.com/turnstile/v0/api.js", ["defer"=>true, "async"=>true]);
+        $this->addJs('assets/js/resetValidate.js');
     }
 }
