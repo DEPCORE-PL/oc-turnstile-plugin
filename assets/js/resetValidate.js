@@ -1,5 +1,8 @@
 document.addEventListener('ajax:fail', function(event) {
-    if (typeof turnstile !== 'undefined' && typeof turnstile.reset === 'function') {
-        turnstile.reset();
+    let widgetId = event.delegateTarget.querySelector('.cf-turnstile');
+    console.log(widgetId);
+    if (widgetId !== undefined) {
+        turnstile.reset(widgetId);
     }
+
 });
