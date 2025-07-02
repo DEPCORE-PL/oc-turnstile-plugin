@@ -1,5 +1,5 @@
-
-// reset turnstile on validation errors, have the freshest key!
-$(document).on('ajaxError', function(event, context, response) {
-    turnstile.reset()
+document.addEventListener('ajax:fail', function(event) {
+    if (typeof turnstile !== 'undefined' && typeof turnstile.reset === 'function') {
+        turnstile.reset();
+    }
 });
