@@ -126,6 +126,7 @@ To configure the plugin:
 1. Go to the OctoberCMS backend.
 2. Navigate to **Settings > Turnstile Captcha**.
 3. Enter your **Site Key** and **Secret Key** (obtained from Cloudflare's Turnstile dashboard).
+4. Remember to include the {% scripts %} tag in your layout
 
 ### Component
 
