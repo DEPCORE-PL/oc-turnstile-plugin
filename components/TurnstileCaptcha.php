@@ -3,6 +3,8 @@
 use Cms\Classes\ComponentBase;
 use Depcore\Turnstile\Models\CaptchaSettings;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Event;
+use October\Rain\Exception\ValidationException;
 
 /**
  * TurnstileCaptcha component class.
@@ -15,6 +17,17 @@ use Illuminate\Support\Facades\Http;
  */
 class TurnstileCaptcha extends ComponentBase
 {
+    public function defineProperties()
+    {
+        return [
+            'submissionAlias' => [
+                'title' => 'Submission component alias',
+                'description' => 'Alias of the User Submission component protected by Turnstile.',
+                'type' => 'string',
+                'default' => '',
+            ],
+        ];
+    }
 
     /**
      * Validates the legitimacy of a Turnstile CAPTCHA response.
@@ -28,19 +41,42 @@ class TurnstileCaptcha extends ComponentBase
      */
     public static function isCaptchaLegit($turnstileResponse)
     {
+        if (
+            !is_string($turnstileResponse) ||
+            trim($turnstileResponse) === '' ||
+            strlen($turnstileResponse) > 2048
+        ) {
+            return false;
+        }
+
         $secret = CaptchaSettings::get('secret');
 
-        // Make the POST request to Cloudflare Turnstile API
-        $response = Http::post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'secret' => $secret,
-            'response' => $turnstileResponse
-        ]);
+        if (!$secret) {
+            return false;
+        }
+
+        try {
+            // Make the POST request to Cloudflare Turnstile API
+            $response = Http::asForm()
+                ->timeout(10)
+                ->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                    'secret' => $secret,
+                    'response' => $turnstileResponse,
+                    'remoteip' => request()->ip()
+                ]);
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        if (!$response->successful()) {
+            return false;
+        }
 
         // Decode the JSON response
-        $result = json_decode($response->body());
+        $result = $response->json();
 
         // Return true if the CAPTCHA is valid, false otherwise
-        return $result->success ?? false;
+        return (bool) ($result['success'] ?? false);
     }
 
     /**
@@ -59,6 +95,27 @@ class TurnstileCaptcha extends ComponentBase
 
         // Verify the CAPTCHA
         return static::isCaptchaLegit($turnstileResponse);
+    }
+
+    public function init(): void
+    {
+        $submissionAlias = trim((string) $this->property('submissionAlias'));
+
+        if ($submissionAlias === '') {
+            return;
+        }
+
+        Event::listen('cms.form.beforeSubmit', function ($component, $model) use ($submissionAlias) {
+            if ($component->alias !== $submissionAlias) {
+                return;
+            }
+
+            if (!static::checkLegit()) {
+                throw new ValidationException([
+                    'cf-turnstile-response' => 'Turnstile validation failed.'
+                ]);
+            }
+        });
     }
 
     /**
