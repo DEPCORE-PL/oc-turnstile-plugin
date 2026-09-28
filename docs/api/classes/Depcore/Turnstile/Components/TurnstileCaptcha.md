@@ -15,14 +15,6 @@ providing bot protection for forms and other user interactions.
 
 ## Methods
 
-### defineProperties
-
-```php
-public defineProperties(): mixed
-```
-
-***
-
 ### isCaptchaLegit
 
 Validates the legitimacy of a Turnstile CAPTCHA response.
@@ -64,14 +56,6 @@ or other anti-bot mechanisms.
 **Return Value:**
 
 Returns true if the request is legitimate, false otherwise.
-
-***
-
-### init
-
-```php
-public init(): void
-```
 
 ***
 
